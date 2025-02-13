@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://i.makeagif.com/media/10-22-2020/Pms24f.gif') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 320px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #131113;
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #832896;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .form-container button:hover {
+            background-color: #a835b7;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            width: 100%;
+        }
+
+        .password-container .see-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .toggle-register, .forgot-link {
+            text-align: center;
+            color: #832896;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+        .toggle-register:hover, .forgot-link:hover {
+            color: #a835b7;
+        }
+
+        #registerContainer, #forgotContainer {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #registerContainer.visible, #forgotContainer.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .back-to-login {
+            background-color: transparent !important;
+            color: #832896 !important;
+            text-decoration: underline;
+            font-size: 14px !important;
+            padding: 5px !important;
+            
+        }
+
+        .form-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="form-container" id="loginContainer">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label>Username: </label>
+                <input type="text" id="loginUsername" name="username" placeholder="Enter Username" required>
+                
+                <label>Password: </label>
+                <div class="password-container">
+                    <input type="password" id="loginPassword" name="password" placeholder="Enter Password" required>
+                    <span class="see-password" onclick="togglePassword('loginPassword', this)">👁️</span>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit">Login</button>
+                <div class="form-links">
+                    <div class="forgot-link" onclick="showForgotForm()">Forgot Password?</div>
+                    <div class="toggle-register" onclick="toggleForms('register')">Create Account</div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-container" id="registerContainer">
+            <h2>Register</h2>
+            <form id="registerForm">
+                <label>Username: </label>
+                <input type="text" id="registerUsername" name="username" placeholder="Choose Username" required>
+                
+                <label>Password: </label>
+                <div class="password-container">
+                    <input type="password" id="registerPassword" name="password" placeholder="Choose Password" required>
+                    <span class="see-password" onclick="togglePassword('registerPassword', this)">👁️</span>
+                </div>
+                
+                <label>Confirm Password: </label>
+                <div class="password-container">
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                    <span class="see-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
+                </div>
+                <div id="registerError" class="error-message"></div>
+                <button type="submit">Register</button>
+                <button type="button" class="back-to-login" onclick="toggleForms('login')">Back to Login</button>
+            </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div class="form-container" id="forgotContainer">
+            <h2>Reset Password</h2>
+            <form id="forgotForm">
+                <label>Username: </label>
+                <input type="text" id="forgotUsername" name="username" placeholder="Enter Username" required>
+                
+                <label>New Password: </label>
+                <div class="password-container">
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter New Password" required>
+                    <span class="see-password" onclick="togglePassword('newPassword', this)">👁️</span>
+                </div>
+                
+                <label>Confirm New Password: </label>
+                <div class="password-container">
+                    <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="Confirm New Password" required>
+                    <span class="see-password" onclick="togglePassword('confirmNewPassword', this)">👁️</span>
+                </div>
+                <div id="forgotError" class="error-message"></div>
+                <div id="forgotSuccess" class="success-message"></div>
+                <button type="submit">Reset Password</button>
+                <button type="button" class="back-to-login" onclick="toggleForms('login')">Back to Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize default admin account
+        if (!localStorage.getItem('users')) {
+            const defaultUsers = [{
+                username: "UPHSD Molino",
+                password: "Molino_2025"
+            }];
+            localStorage.setItem('users', JSON.stringify(defaultUsers));
+        }
+
+        function toggleForms(formType) {
+            const loginContainer = document.getElementById('loginContainer');
+            const registerContainer = document.getElementById('registerContainer');
+            const forgotContainer = document.getElementById('forgotContainer');
+            
+            // Hide all containers first
+            loginContainer.style.display = 'none';
+            registerContainer.style.display = 'none';
+            registerContainer.classList.remove('visible');
+            forgotContainer.style.display = 'none';
+            forgotContainer.classList.remove('visible');
+            
+            // Show the requested container
+            if (formType === 'register') {
+                registerContainer.style.display = 'block';
+                setTimeout(() => registerContainer.classList.add('visible'), 10);
+            } else if (formType === 'forgot') {
+                forgotContainer.style.display = 'block';
+                setTimeout(() => forgotContainer.classList.add('visible'), 10);
+            } else {
+                loginContainer.style.display = 'block';
+            }
+        }
+
+        function showForgotForm() {
+            toggleForms('forgot');
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                window.location.href = "index.html";
+            } else {
+                errorDiv.textContent = "Invalid username or password";
+                errorDiv.style.display = "block";
+            }
+        });
+
+        // Registration form submission
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = "Passwords do not match";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            if (users.some(u => u.username === username)) {
+                errorDiv.textContent = "Username already exists";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            users.push({
+                username: username,
+                password: password
+            });
+
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Registration successful! Please login.');
+            
+            // Clear the form and return to login
+            event.target.reset();
+            errorDiv.style.display = "none";
+            toggleForms('login');
+        });
+
+        // Forgot Password form submission
+        document.getElementById('forgotForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('forgotUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            const errorDiv = document.getElementById('forgotError');
+            const successDiv = document.getElementById('forgotSuccess');
+            
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+
+            if (newPassword !== confirmNewPassword) {
+                errorDiv.textContent = "Passwords do not match";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIndex = users.findIndex(u => u.username === username);
+
+            if (userIndex === -1) {
+                errorDiv.textContent = "Username not found";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            // Update the password
+            users[userIndex].password = newPassword;
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            successDiv.textContent = "Password reset successful! Please login with your new password.";
+            successDiv.style.display = "block";
+            
+            // Clear the form
+            event.target.reset();
+            
+            // Redirect to login after 2 seconds
+            setTimeout(() => {
+                toggleForms('login');
+            }, 2000);
+        });
+
+        // Function to toggle password visibility
+        function togglePassword(inputId, icon) {
+            const passwordField = document.getElementById(inputId);
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                passwordField.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
+    </script>
+</body>
+</html>

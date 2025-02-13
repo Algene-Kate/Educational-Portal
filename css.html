@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education and Learning Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #F0F8FF; 
+            color: #333;
+        }
+
+        header {
+            background-color: #80b9c9;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center align items */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em; /* Increased font size for better visibility */
+            text-align: center; 
+            margin-bottom: 10px; /* Space between title and search bar */
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center; /* Center align the search bar */
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 300px; /* Default width for larger screens */
+            border: 1px solid #F4DECB; /* Sand */
+            border-radius: 5px 0 0 5px;
+            background-color: #ffffff; /* White background */
+            color: #333;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #b0c0d9; /* Change border color on focus */
+            outline: none; /* Remove outline */
+        }
+
+        .search-bar button {
+            padding: 10px 12px;
+            border: none;
+            background-color: #b0c0d9; /* Light blue */
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #3B1E3D; /* Darker shade for hover */
+        }
+
+        /* Navigation */
+        nav {
+            background-color: white;
+            padding: 10px;
+            white-space: nowrap; /* Prevents wrapping */
+            overflow-x: auto; /* Enables horizontal scrolling */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+            border-bottom: 1px solid rgb(168, 164, 164);
+        }
+
+        nav::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for cleaner look */
+        }
+
+        nav a {
+            display: inline-block; /* Ensures horizontal layout */
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 1.0em;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #b0c0d9; /* Change color on hover */
+        }
+
+        nav a.active {
+            color: #b0c0d9; /* Active link color */
+            border-bottom: 2px solid #b0c0d9; /* Underline active link */
+        }
+
+        main {
+            padding: 20px;
+            background-color: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #49274A; /* Eggplant */
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .column {
+            flex: 1;
+            margin: 0 15px;
+            padding: 20px;
+            background-color: #F0F8FF; 
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 45%; /* Increase to 45% for more space */
+        }
+
+        .column h3 {
+            color: #49274A; /* Eggplant */
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #7f9db1;
+            color: white;
+            font-size: 16px;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .video-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .conclusion-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #F0F8FF;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        pre {
+            overflow-x: auto; /* Enables horizontal scrolling on smaller screens */
+            white-space: pre-wrap; /* Ensures text wraps within the container */
+            word-wrap: break-word; /* Allows long words to be broken */
+            max-width: 100%; /* Ensures it fits within the parent container */
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        code {
+            font-family: monospace;
+            display: block;
+            text-align: left;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em; /* Adjust font size for smaller screens */
+            }
+
+            .search-bar {
+                flex-direction: column; /* Stack input and button vertically on smaller screens */
+                align-items: stretch; /* Stretch input and button */
+                margin-top: 10px; /* Space above search bar */
+            }
+
+            .search-bar input {
+                width: 100%; /* Full width for input */
+                margin-bottom: 5px; /* Space between input and button */
+            }
+
+            .search-bar button {
+                width: 100%; /* Full width for button */
+            }
+
+            nav {
+                flex-direction: column; /* Stack navigation links vertically */
+            }
+
+            nav a {
+                margin: 5px 0; /* Space between links */
+            }
+
+            main {
+                margin: 10px; /* Adjust margins for smaller screens */
+                padding: 15px; /* Adjust padding */
+            }
+
+            .content {
+                flex-direction: column; /* Stack columns on smaller screens */
+            }
+
+            .column {
+                margin: 10px 0; /* Vertical spacing for stacked columns */
+                max-width: 100%; /* Full width on smaller screens */
+            }
+
+            .video-container iframe {
+                width: 100%; /* Make video responsive */
+                height: auto; /* Maintain aspect ratio */
+            }
+
+            pre {
+                font-size: 14px; /* Reduces font size for better readability on mobile */
+                padding: 8px; /* Adjusts padding for smaller screens */
+            }
+
+            /* Center text inside the example code block */
+            pre code {
+                display: block;
+                text-align: center; /* Center the code inside the <pre><code> block */
+                margin: 0 auto; /* Centers the block itself */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Education and Learning Portal</h1>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+            <button id="search-button">🔍</button>
+        </div>
+    </header>
+
+    <nav style="text-align: center;">
+        <a href="index.html">Home</a>
+        <a href="javascript.html">JavaScript</a>
+        <a href="java.html">Java</a>
+        <a href="css.html">CSS</a>
+        <a href="html.html">HTML</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contacts</a>
+        <a href="login.html">Logout</a>
+    </nav>
+
+    <main>
+        <section id="css">
+            <h2 style="background-color: #7f9db1; color: white; border: solid; border-radius: 5px; padding: 10px; font-size:large; text-align: center;">Learn CSS</h2>
+            <p style="text-align: center;">CSS (Cascading Style Sheets) is a stylesheet language used to describe the presentation of a document written in HTML or XML.</p><br>
+
+            <div class="video-container"><br>
+                <iframe width="560" height="315" 
+                    src="https://www.youtube.com/embed/Z4pCqK-V_Wo?si=QM3yystUVkhr8diu" title="YouTube video player" 
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+                <h3>Introduction to CSS</h3>
+            </div><br>
+
+            <div class="content">
+                <div class="column">
+                    <h3 style="text-align: center;">Uses of CSS</h3><br>
+                    <ul style="padding-left: 20px; line-height: 0.5in;">
+                        <li>Web Page Layout – Positioning elements, grids, and flexbox systems.</li>
+                        <li>Styling – Colors, fonts, borders, and backgrounds.</li>
+                        <li>Responsive Design – Ensures the layout adapts to different screen sizes (using media queries).</li>
+                        <li>Animations – Transitions, keyframes, and interactive effects.</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3 style="text-align: center;">Key Features of CSS</h3><br>
+                    <ul style="padding-left: 20px; line-height: 0.5in;">
+                        <li>Separation of Content and Style – Keeps HTML focused on structure and CSS focused on presentation.</li>
+                        <li>Responsive – Easily adapt websites to mobile, tablet, and desktop views.</li>
+                        <li>Easy Maintenance – Makes updating visual elements faster without altering HTML.</li>
+                        <li>Advanced Styling – Offers flexibility through pseudo-classes, pseudo-elements, and advanced selectors.</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <h3>Example of CSS Code</h3><br>
+                        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; text-align: left; width: fit-content;">
+                            <code>
+                    /* Simple CSS example */
+                    body {
+                        background-color: #f0f0f0;
+                        font-family: Arial, sans-serif;
+                    }
+                    
+                    h1 {
+                        color: #333;
+                        text-align: center;
+                    }
+                    
+                    button {
+                        background-color: #ff6600;
+                        color: white;
+                        padding: 10px;
+                        border: none;
+                        cursor: pointer;
+                    }
+                            </code>
+                        </pre>
+                    </div>                    
+                </div>
+            </div>
+
+            <!-- Conclusion Container -->
+            <div class="conclusion-container">
+                <h3>Conclusion</h3><br>
+                <p style="text-indent: 50px;">CSS is essential for web development, allowing for the separation of design and content. It plays a significant role in making websites visually appealing, responsive, and user-friendly. Mastery of CSS is a crucial skill for web designers and developers.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Education and Learning Portal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('search-button').addEventListener('click', function() {
+            const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+            if (searchTerm) {
+                const pages = {
+                    java: "java.html",
+                    javascript: "javascript.html",
+                    css: "css.html",
+                    html: "html.html",
+                    home: "index.html",
+                };
+
+                let matchedPage = Object.keys(pages).find(key => searchTerm === key.toLowerCase());
+
+                if (matchedPage) {
+                    window.location.href = pages[matchedPage];
+                } else {
+                    alert('No results found for "' + searchTerm + '".');
+                }
+            } else {
+                alert('Please enter a search term.');
+            }
+        });
+
+        // Adding 'active' class to the navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('nav a');
+            const currentUrl = window.location.href;
+
+            navLinks.forEach(link => {
+                if (currentUrl.includes(link.href)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
