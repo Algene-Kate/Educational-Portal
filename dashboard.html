@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CodeStuct LMS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #0a08149a;
+            --secondary: #04101d;
+            --accent: #00c9ff;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --success: #2dd36f;
+            --warning: #ffc409;
+            --danger: #eb445a;
+            --gray-light: #e9ecef;
+            --shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 10px 20px rgba(76, 37, 245, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            display: flex;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .dark-mode {
+            background-color: var(--dark);  
+            color: var(--light);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px 0;
+            background-color: var(--secondary);
+            border-radius: 8px;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 25px;
+            margin-top: 50px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 201, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 201, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 201, 255, 0); }
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            display: block;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar a:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .sidebar a:hover:before {
+            left: 0;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--secondary);
+            transform: translateX(5px) scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .main-content.collapsed {
+            margin-left: 70px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+            background-color: var(--light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dark-mode .container {
+            background-color: var(--secondary);
+            border: 1px solid var(--primary);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .dark-mode h1, 
+        .dark-mode h2, 
+        .dark-mode h3 {
+            color: var(--accent);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 1; }
+            20% { transform: scale(25, 25); opacity: 0.2; }
+            100% { opacity: 0; transform: scale(40, 40); }
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .settings-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: var(--light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-in-out;
+        }   
+
+        .dark-mode .settings-container {
+            background-color: var(--secondary);
+            border: 1px solid var(--primary);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        .toggle-label {
+            margin-right: 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        input[type="text"].white-bg,
+        input[type="email"].white-bg {
+            background-color: var(--gray-light); 
+            color: var(--secondary); 
+            border: 1px solid #ddd;
+            cursor: not-allowed;
+        }
+
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;  
+            padding: 12px;
+            padding-right: 60px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            display: block;
+            transition: var(--transition);
+        }   
+
+        .dark-mode input[type="password"],
+        .dark-mode input[type="text"] {
+            background-color: var(--dark);
+            color: var(--light);
+            border-color: var(--primary-dark);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            display: block;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 24px;
+            transition: 0.4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 70%;   
+            right: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            text-decoration: underline;
+            color: var(--accent);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Change from 2 to 3 columns */
+            grid-template-rows: repeat(2, 1fr);    /* Keep 2 rows */
+            gap: 20px;
+            max-width: 900px; /* Increased from 600px to accommodate 3 columns */
+            margin: 30px auto;
+        }
+
+        .image-grid-instructor {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Change from 2 to 3 columns */
+            grid-template-rows: repeat(2, 1fr);    /* Keep 2 rows */
+            gap: 20px;
+            max-width: 600px;
+            margin: 30px auto;
+            justify-content: center;
+            padding: 10px 5px;
+        }
+
+        .image-grid-student {
+            display:grid;
+            grid-template-columns: repeat(2, 1fr); /* Change from 2 to 3 columns */
+            grid-template-rows: repeat(2, 1fr);    /* Keep 2 rows */
+            gap: 20px;
+            max-width: 600px;
+            margin: 30px auto;
+            justify-content: center;
+            padding: 10px 5px;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 200px;  /* Slightly reduced width to fit 3 columns */
+            height: 200px; /* Slightly reduced height to maintain aspect ratio */
+            box-shadow: var(--card-shadow);
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .image-grid .image-container:nth-child(1) { animation-delay: 0.1s; }
+        .image-grid .image-container:nth-child(2) { animation-delay: 0.2s; }
+        .image-grid .image-container:nth-child(3) { animation-delay: 0.3s; }
+        .image-grid .image-container:nth-child(4) { animation-delay: 0.4s; }
+        .image-grid .image-container:nth-child(5) { animation-delay: 0.5s; }
+
+        .image-grid-instructor .image-container:nth-child(1) { animation-delay: 0.1s; }
+        .image-grid-instructor .image-container:nth-child(2) { animation-delay: 0.2s; }
+        .image-grid-instructor .image-container:nth-child(3) { animation-delay: 0.3s; }
+        .image-grid-instructor .image-container:nth-child(4) { animation-delay: 0.4s; }
+
+        .image-grid-student .image-container:nth-child(1) { animation-delay: 0.1s; }
+        .image-grid-student .image-container:nth-child(2) { animation-delay: 0.2s; }
+        .image-grid-student .image-container:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hover-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(67, 97, 238, 0.85);
+            color: #fff;
+            text-align: center;
+            padding: 12px 0;
+            font-weight: 600;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .image-container:hover .hover-text {
+            opacity: 1;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); }
+            to { transform: translateY(0); }
+        }
+
+        .image-container:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .image-container:hover img {
+            transform: scale(1.1);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            background-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 250px;
+            transition: var(--transition);
+        }
+
+        .main-content.collapsed {
+            margin-left: 70px;
+        }
+
+        .role-changed-notification {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            text-align: center;
+            animation: slideDown 0.5s ease-out, fadeOut 5s forwards 1s;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-notification {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .close-notification:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .dark-mode label {
+            color: var(--accent);
+        }
+
+        /* Welcome message styling */
+        .welcome-message {
+            text-align: center;
+            margin: 20px 0 30px;
+            padding: 15px;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            animation: expandWidth 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; opacity: 0; }
+            to { width: 100%; opacity: 1; }
+        }
+
+        .welcome-message:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .dark-mode .welcome-message {
+            background-color: rgba(0, 201, 255, 0.1);
+            border-left: 5px solid var(--accent);
+        }
+
+        .user-name {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .dark-mode .user-name {
+            color: var(--accent);
+        }
+
+        .user-role {
+            background-color: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 5px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Button group styling */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        #saveProfileBtn, #editProfileBtn {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        /* Section dividers */
+        .section-divider {
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .section-divider:after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .section-divider:hover:after {
+            width: 100%;
+        }
+
+        .dark-mode .section-divider {
+            border-top: 1px solid #444;
+        }
+
+        .dark-mode .section-divider:after {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div id ="sidebar" div class="sidebar">
+        <div class="sidebar-header">CodeStruct</div>
+        <a href="#" onclick="showDashboard()">Dashboard</a>
+        <a href="#" onclick="showSettings()">Profile Settings</a>
+        <a href="library.html" id="libraryLink" class="hidden">Manage Users</a>
+    </div>  
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container" id="dashboardContainer">
+            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+            
+            <!-- Role change notification -->
+            <div id="roleChangeNotification" class="role-changed-notification hidden">
+                <span id="notificationText"></span>
+                <span class="close-notification" onclick="closeNotification()">×</span>
+            </div>
+            
+            <h2> CodeStuct Dashboard </h2> <br>
+
+            <h2> Welcome, <span id="userName"></span>! You are Logged in as <span id="userRole"></span> </h2>
+
+            <!-- Student Dashboard -->
+            <div id="student-dashboard" class="hidden">
+                <h2>Student Dashboard</h2>
+                <div class="image-grid-student">
+                
+                <div class="image-container">
+                        <a href="enrollment.html">
+                            <img src="https://cdn.dribbble.com/userupload/24405183/file/original-7e974ceca651feb6123f2ac24cf57f42.gif" alt="Manage Courses">
+                            <div class="hover-text">Enrollment Form</div>
+                        </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="home.html">
+                        <img src="https://i.pinimg.com/originals/b4/13/34/b41334a036d6796c281a6e5cbb36e4b5.gif" alt="Enrolled Courses">
+                        <div class="hover-text">Enrolled Courses</div>
+                    </a>
+                </div>
+            
+                <div class="image-container">
+                    <a href="#" onclick="showSettings()">
+                        <img src="https://i.pinimg.com/originals/f5/aa/d8/f5aad8e143b8d197c25d5e884bb315a2.gif" alt="Profile">
+                        <div class="hover-text">System Settings</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="contact.html" onclick="showSettings()">
+                        <img src="https://navaantrix.com/assets/images/Contact-us.gif" alt="System Settings">
+                        <div class="hover-text">Contact Us</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+            <!-- Instructor Dashboard -->
+            <div id="instructor-dashboard" class="hidden">
+                <h2>Instructor Dashboard</h2>
+                <div class="image-grid-instructor">
+                <div class="image-container">
+                    <a href="createcourses.html">
+                        <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDczZ3VjNmU4Y2hvbm84ajFoenVwMDRhajU5bGZxbmh3cDZjN3ptNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AurFxpDAhkcytbCQUl/giphy.gif" alt="Create Course">
+                        <div class="hover-text">Create Course</div>
+                    </a>
+                </div>
+            
+                <div class="image-container">
+                    <a href="index.html">
+                        <img src="https://i.pinimg.com/originals/b2/bb/e8/b2bbe8c8f46afa220b048b97be926df3.gif" alt="Manage Courses">
+                        <div class="hover-text">View Courses</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="enrollment.html">
+                        <img src="https://cdn.dribbble.com/userupload/24405183/file/original-7e974ceca651feb6123f2ac24cf57f42.gif" alt="Manage Courses">
+                        <div class="hover-text">Enrollment Form</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="#" onclick="showSettings()">
+                        <img src="https://i.pinimg.com/originals/f5/aa/d8/f5aad8e143b8d197c25d5e884bb315a2.gif" alt="Profile">
+                        <div class="hover-text">System Settings</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="contact.html" onclick="showSettings()">
+                        <img src="https://navaantrix.com/assets/images/Contact-us.gif" alt="System Settings">
+                        <div class="hover-text">Contact Us</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+            <!-- Admin Dashboard -->
+            <div id="admin-dashboard" class="hidden">
+                <div class="image-grid">
+                <div class="image-container">
+                    <a href="index.html">
+                        <img src="https://i.pinimg.com/originals/b2/bb/e8/b2bbe8c8f46afa220b048b97be926df3.gif" alt="View Courses">
+                        <div class="hover-text">View Courses</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="createcourses.html">
+                        <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDczZ3VjNmU4Y2hvbm84ajFoenVwMDRhajU5bGZxbmh3cDZjN3ptNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AurFxpDAhkcytbCQUl/giphy.gif" alt="Create Courses">
+                        <div class="hover-text">Create Courses</div>
+                    </a>
+                </div>
+            
+                <div class="image-container">
+                    <a href="library.html">
+                        <img src="https://cdn-icons-gif.flaticon.com/15401/15401372.gif" alt="Manage Users">
+                        <div class="hover-text">Manage Users</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="enrolled-students.html">
+                        <img src="https://assets-v2.lottiefiles.com/a/94c3f9ee-1163-11ee-8a5b-bb472041458f/p8WuMVPELc.gif" alt="Manage Users">
+                        <div class="hover-text">Enrolled Students Library</div>
+                    </a>
+                </div>
+            
+                <div class="image-container">
+                    <a href="#" onclick="showSettings()">
+                        <img src="https://i.pinimg.com/originals/f5/aa/d8/f5aad8e143b8d197c25d5e884bb315a2.gif" alt="System Settings">
+                        <div class="hover-text">System Settings</div>
+                    </a>
+                </div>
+
+                <div class="image-container">
+                    <a href="contact.html" onclick="showSettings()">
+                        <img src="https://navaantrix.com/assets/images/Contact-us.gif" alt="System Settings">
+                        <div class="hover-text">Contact Us</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+            <button class="btn" onclick="logoutUser()">Logout</button>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="settings-container hidden" id="settingsContainer">
+            <h2> Profile Settings</h2>
+            
+            <div>
+                <label for="editName"><b>Full Name:</b></label>
+                <input type="text" id="editName" class="white-bg" disabled>
+            </div>
+            <div>
+                <label for="editEmail"><b>Email:</b></label>
+                <input type="email" id="editEmail" class="white-bg" disabled>
+            </div>
+        
+            <button class="btn" id="editProfileBtn" onclick="enableEditing()">Edit</button>
+            <button class="btn" id="saveProfileBtn" onclick="saveChanges()" disabled>Save</button>
+        
+            <!-- Reset Password Section -->
+            <h3>Reset Password</h3>
+            <div class="password-container">
+                <label for="newPassword"><b>New Password:</b></label>
+                <input type="password" id="newPassword">
+                <span class="password-toggle" onclick="togglePasswordVisibility('newPassword', this)">Show</span>
+            </div>
+            
+            <div class="password-container">
+                <label for="confirmPassword"><b>Confirm Password:</b></label>
+                <input type="password" id="confirmPassword">
+                <span class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)">Show</span>
+            </div>
+            <button class="btn" onclick="resetPassword()">Reset Password</button>
+        
+            <!-- Dark Mode Toggle -->
+            <h3>Other settings</h3>
+            <div class="toggle-container">
+                <span class="toggle-label">Dark Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        
+            <button class="btn" onclick="showDashboard()">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(passwordId, toggleElement) {
+            const passwordField = document.getElementById(passwordId);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleElement.textContent = "Hide";
+            } else {
+                passwordField.type = "password";
+                toggleElement.textContent = "Show";
+            }
+        }
+
+        function enableEditing() {
+            document.getElementById('editName').disabled = false;
+            document.getElementById('editName').classList.remove('white-bg');
+            document.getElementById('editProfileBtn').disabled = true;
+            document.getElementById('saveProfileBtn').disabled = false;
+        }
+
+        function saveChanges() {
+            const newName = document.getElementById('editName').value;
+            let user = JSON.parse(localStorage.getItem('loggedInUser'));
+            
+            if (user) {
+                user.name = newName;
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
+                
+                // Update the users array and accountsLibrary as well
+                updateUserInStorage(user.id, { name: newName });
+                
+                document.getElementById('userName').innerText = newName;
+                alert("Profile updated successfully!");
+            }
+            
+            document.getElementById('editName').disabled = true;
+            document.getElementById('editName').classList.add('white-bg');
+            document.getElementById('editProfileBtn').disabled = false;
+            document.getElementById('saveProfileBtn').disabled = true;
+        }
+
+        function updateUserInStorage(userId, updates) {
+            // Update in users array
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users = users.map(user => {
+                if (String(user.id) === String(userId)) {
+                    return { ...user, ...updates };
+                }
+                return user;
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Update in accountsLibrary
+            let accountsLibrary = JSON.parse(localStorage.getItem('accountsLibrary')) || [];
+            accountsLibrary = accountsLibrary.map(account => {
+                if (String(account.id) === String(userId)) {
+                    return { ...account, ...updates };
+                }
+                return account;
+            });
+            localStorage.setItem('accountsLibrary', JSON.stringify(accountsLibrary));
+        }
+
+        function checkForRoleChange() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) return;
+            
+            // Check if there's a stored role
+            const previousRole = sessionStorage.getItem('userPreviousRole');
+            
+            // If no previous role stored or first time loading, save current role and exit
+            if (!previousRole) {
+                sessionStorage.setItem('userPreviousRole', loggedInUser.role);
+                return;
+            }
+            
+            // Check if role has changed
+            if (previousRole !== loggedInUser.role) {
+                document.getElementById('notificationText').innerText = 
+                    `Your role has been updated from ${previousRole} to ${loggedInUser.role}!`;
+                document.getElementById('roleChangeNotification').classList.remove('hidden');
+                
+                // Update stored role
+                sessionStorage.setItem('userPreviousRole', loggedInUser.role);
+            }
+        }
+
+        function closeNotification() {
+            document.getElementById('roleChangeNotification').classList.add('hidden');
+        }
+
+        function syncUserData() {
+            // Get current logged in user
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) return;
+            
+            // Check if user data needs to be updated from accountsLibrary
+            const accountsLibrary = JSON.parse(localStorage.getItem('accountsLibrary')) || [];
+            const userInAccounts = accountsLibrary.find(account => String(account.id) === String(loggedInUser.id));
+            
+            if (userInAccounts && userInAccounts.role !== loggedInUser.role) {
+                // User role has been updated in accountsLibrary, sync it to loggedInUser
+                loggedInUser.role = userInAccounts.role;
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                
+                // Force UI update
+                updateDashboardForRole(loggedInUser.role);
+                document.getElementById('userRole').innerText = userInAccounts.role.charAt(0).toUpperCase() + userInAccounts.role.slice(1);
+                
+                // Show notification
+                document.getElementById('notificationText').innerText = 
+                    `Your role has been updated to ${userInAccounts.role}!`;
+                document.getElementById('roleChangeNotification').classList.remove('hidden');
+            }
+        }
+
+        function updateDashboardForRole(role) {
+            document.getElementById('student-dashboard').classList.add("hidden");
+            document.getElementById('instructor-dashboard').classList.add("hidden");
+            document.getElementById('admin-dashboard').classList.add("hidden");
+            document.getElementById('libraryLink').classList.add("hidden");
+
+            role = role.toLowerCase();
+            if (role === "student") {
+                document.getElementById('student-dashboard').classList.remove("hidden");
+            } else if (role === "instructor") {
+                document.getElementById('instructor-dashboard').classList.remove("hidden");
+            } else if (role === "admin") {
+                document.getElementById('admin-dashboard').classList.remove("hidden");
+                document.getElementById('libraryLink').classList.remove("hidden");
+            }
+        }
+
+        window.onload = function () {
+            const user = JSON.parse(localStorage.getItem('loggedInUser'));
+
+            if (!user || !user.role) {
+                alert("Unauthorized access detected!");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Sync user data first
+            syncUserData();
+            
+            const userRole = user.role.toLowerCase();
+            document.getElementById('userName').innerText = user.name;
+            document.getElementById('userRole').innerText = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+            document.getElementById('editName').value = user.name;
+            document.getElementById('editEmail').value = user.email;
+
+            updateDashboardForRole(userRole);
+            
+            // Check for role changes
+            checkForRoleChange();
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggle').checked = true;
+            }
+        };
+
+        function toggleDarkMode() {
+            const isDarkMode = document.getElementById('darkModeToggle').checked;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        }
+
+        function showDashboard() {
+            // Sync user data when returning to dashboard
+            syncUserData();
+            document.getElementById("dashboardContainer").classList.remove("hidden");
+            document.getElementById("settingsContainer").classList.add("hidden");
+        }
+
+        function showSettings() {
+            document.getElementById("settingsContainer").classList.remove("hidden");
+            document.getElementById("dashboardContainer").classList.add("hidden");
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword === '' || confirmPassword === '') {
+                alert("Please fill out both password fields.");
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            // Simulating password reset (store in localStorage for testing)
+            let user = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (user) {
+                user.password = newPassword; // Updating password
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
+                
+                // Update password in users array as well
+                updateUserInStorage(user.id, { password: newPassword });
+                
+                alert("Password has been reset successfully!");
+            } else {
+                alert("User not found! Please log in again.");
+            }
+
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }       
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.querySelector('.main-content');
+
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                content.classList.remove('full-width');
+            } else {
+                sidebar.classList.add('hidden');
+                content.classList.add('full-width');
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('loggedInUser');
+            sessionStorage.removeItem('userPreviousRole');
+            alert("Logged out!");
+            window.location.href = 'login.html';
+        }
+        
+        // Check for role changes periodically (every 5 seconds)
+        setInterval(syncUserData, 5000);
+    </script>
+
+</body>
+</html>

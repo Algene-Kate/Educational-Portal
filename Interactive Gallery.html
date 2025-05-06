@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Interactive Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #5c94fc; /* Mario sky blue */
+            color: white;
+            overflow-x: hidden;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M0 0h35v35H0zM35 35h35v35H35z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #e52521 0%, #c41e3a 100%); /* Mario red gradient */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 60px;
+            height: 60px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23FFC107' d='M221.5 203.5h69v69h-69z'/%3E%3C/svg%3E");
+            background-size: contain;
+            animation: rotate 10s linear infinite;
+            opacity: 0.2;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            display: inline-block;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #fbd000; /* Mario yellow */
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease-out;
+        }
+        
+        h1:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .gallery-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            background-color: #000;
+            border: 5px solid #fbd000; /* Mario yellow border */
+            touch-action: pan-x;
+        }
+        
+        .gallery {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .gallery-item {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+            padding: 20px 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .gallery-item.active .caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            background-color: #fbd000; /* Mario yellow */
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #b02818;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover::after {
+            transform: translateX(0);
+        }
+        
+        .btn:hover {
+            background-color: #ffce00;
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b02818;
+        }
+        
+        .btn-prev {
+            margin-right: 10px;
+        }
+        
+        .thumbnails {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #388c46 0%, #2e7d32 100%); /* Mario green gradient */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .thumbnail {
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .thumbnail.active {
+            border-color: #fbd000; /* Mario yellow */
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(251, 208, 0, 0.7);
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        
+        .thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail.active::after,
+        .thumbnail:hover::after {
+            opacity: 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #e52521 0%, #ff5252 100%); /* Mario red gradient */
+            width: 0;
+            transition: width 0.3s;
+        }
+        
+        .mario-decoration {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 100;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.2); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+        
+        .instructions {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border-left: 5px solid #fbd000; /* Mario yellow */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #5c94fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader img {
+            width: 100px;
+            height: 100px;
+            animation: bounce 0.5s infinite alternate;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+        }
+        
+        .loader-text {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .pagination-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #aaa;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-dot.active {
+            background-color: #fbd000; /* Mario yellow */
+            transform: scale(1.3);
+        }
+        
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .fullscreen .gallery-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            border-radius: 0;
+        }
+        
+        .info-panel {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .game-details {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .game-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .game-description {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .filter-bar {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background-color: #e52521; /* Mario red */
+        }
+        
+        .filter-btn:hover {
+            background-color: #555;
+        }
+    
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .mario-character:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .gallery-container {
+                height: 350px;
+            }
+            
+            .thumbnail {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .game-details {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .gallery-container {
+                height: 250px;
+            }
+            
+            .thumbnail {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .game-details {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23e52521'/><circle cx='50' cy='50' r='35' fill='%23fbd000'/><text x='50' y='65' font-size='45' fill='%23e52521' text-anchor='middle'>M</text></svg>" alt="Loading...">
+            <div class="loader-text">Loading Mario Gallery...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="fade-in">
+            <h1>Super Mario Gallery</h1>
+            <p>Explore the evolution of Super Mario games through the years</p>
+        </header>
+        
+        <div class="instructions fade-in">
+            <p>Swipe left or right to navigate through the gallery. Click on thumbnails to jump to specific images.</p>
+            <p>Press the Auto Play button to start a slideshow or use the filter buttons to view specific game types.</p>
+        </div>
+        
+        <div class="filter-bar fade-in" id="filterBar">
+            <button class="filter-btn active" data-filter="all">All Games</button>
+            <button class="filter-btn" data-filter="2d">2D Platformers</button>
+            <button class="filter-btn" data-filter="3d">3D Adventures</button>
+            <button class="filter-btn" data-filter="spinoff">Spin-offs</button>
+        </div>
+        
+        <div class="gallery-container fade-in" id="galleryContainer">
+            <button class="fullscreen-btn" id="fullscreenBtn">⛶</button>
+            <div class="gallery" id="gallery">
+                <!-- Gallery items will be inserted here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="pagination" id="pagination">
+            <!-- Pagination dots will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="progress-bar fade-in">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="controls fade-in">
+            <div>
+                <button class="btn btn-prev" id="prevBtn">Previous</button>
+                <button class="btn btn-next" id="nextBtn">Next</button>
+            </div>
+            <button class="btn btn-play" id="playBtn">
+                <span id="playBtnText">Auto Play</span>
+            </button>
+        </div>
+        
+        <div class="thumbnails fade-in" id="thumbnails">
+            <!-- Thumbnails will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="info-panel fade-in" id="infoPanel">
+            <div class="game-details">
+                <div class="game-title" id="gameTitle">Super Mario Bros.</div>
+                <div class="game-description" id="gameDescription">The iconic original game that started it all</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mario-character" id="marioCharacter"></div>
+
+    <script>
+        // Mario Gallery Images with category tags
+        const images = [
+            {
+                src: "https://i.ytimg.com/vi/cWOkHQXw0JQ/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCqzdZDkPgmkM1-wTVsdF2LhRxynw",
+                caption: "Super Mario Bros. (1985) - The iconic original game that started it all",
+                title: "Super Mario Bros.",
+                year: 1985,
+                description: "The iconic original game that started it all",
+                category: "2d"
+            },
+            {
+                src: "https://i.ytimg.com/vi/E453vjF2f1E/maxresdefault.jpg",
+                caption: "Super Mario Bros. 3 (1988) - Introduced the Tanooki Suit and other power-ups",
+                title: "Super Mario Bros. 3",
+                year: 1988,
+                description: "Introduced the Tanooki Suit and other power-ups",
+                category: "2d"
+            },
+            {
+                src: "https://i.ytimg.com/vi/1TUtU2F0h2w/maxresdefault.jpg",
+                caption: "Super Mario World (1990) - Introduced Yoshi and cape flying mechanics",
+                title: "Super Mario World",
+                year: 1990,
+                description: "Introduced Yoshi and cape flying mechanics",
+                category: "2d"
+            },
+            {
+                src: "https://www.lynk.wtf/wp-content/uploads/2020/09/super-mario-64-cover-1080x630.jpg",
+                caption: "Super Mario 64 (1996) - Pioneering 3D platformer with revolutionary controls",
+                title: "Super Mario 64",
+                year: 1996,
+                description: "Pioneering 3D platformer with revolutionary controls",
+                category: "3d"
+            },
+            {
+                src: "https://media.vandal.net/master/4-2023/20234921304373_1.jpg",
+                caption: "Super Mario Sunshine (2002) - Mario's tropical adventure with FLUDD water pack",
+                title: "Super Mario Sunshine",
+                year: 2002,
+                description: "Mario's tropical adventure with FLUDD water pack",
+                category: "3d"
+            },
+            {
+                src: "https://www.nintendo.com/eu/media/images/10_share_images/games_15/nintendo_ds_22/SI_NDS_NewSuperMarioBrosDS_image1600w.jpg",
+                caption: "New Super Mario Bros. (2006) - Return to 2D platforming with modern graphics",
+                title: "New Super Mario Bros.",
+                year: 2006,
+                description: "Return to 2D platforming with modern graphics",
+                category: "2d"
+            },
+            {
+                src: "https://www.nintendo.com/eu/media/images/10_share_images/games_15/wii_24/SI_Wii_SuperMarioGalaxy_image1600w.jpg",
+                caption: "Super Mario Galaxy (2007) - Gravity-defying platforming across planets",
+                title: "Super Mario Galaxy",
+                year: 2007,
+                description: "Gravity-defying platforming across planets",
+                category: "3d"
+            },
+            {
+                src: "https://ihsvoice.com/wp-content/uploads/2017/11/SuperMarioOdyssey1-900x506.png",
+                caption: "Super Mario Odyssey (2017) - Adventure with Cappy across various kingdoms",
+                title: "Super Mario Odyssey",
+                year: 2017,
+                description: "Adventure with Cappy across various kingdoms",
+                category: "3d"
+            },
+            {
+                src: "https://i.ytimg.com/vi/tKlRN2YpxRE/maxresdefault.jpg",
+                caption: "Mario Kart 8 Deluxe (2017) - Racing action with anti-gravity tracks",
+                title: "Mario Kart 8 Deluxe",
+                year: 2017,
+                description: "Racing action with anti-gravity tracks",
+                category: "spinoff"
+            },
+            {
+                src: "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000018694/aac100206f1c50349fd2c48595e55603259ae60a4ab4eefc28e71f41efb78b97",
+                caption: "Super Mario Maker 2 (2019) - Create and share your own Mario levels",
+                title: "Super Mario Maker 2",
+                year: 2019,
+                description: "Create and share your own Mario levels",
+                category: "2d"
+            },
+            {
+                src: "https://i.ytimg.com/vi/LpSvcSGjW-A/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCbeEusLDUoOb-_inTcvK8uCTzt_g",
+                caption: "Paper Mario: The Origami King (2020) - RPG adventure with paper aesthetics",
+                title: "Paper Mario: The Origami King",
+                year: 2020,
+                description: "RPG adventure with paper aesthetics",
+                category: "spinoff"
+            },
+            {
+                src: "https://nintendosoup.com/wp-content/uploads/2017/12/mario_rabbids_hong_kong_pic_1_clear_file-1038x576.png",
+                caption: "Mario + Rabbids Kingdom Battle (2017) - Tactical RPG crossover",
+                title: "Mario + Rabbids Kingdom Battle",
+                year: 2017,
+                description: "Tactical RPG crossover",
+                category: "spinoff"
+            },
+            {
+                src: "https://www.nintendo.com/eu/media/images/10_share_images/games_15/wiiu_14/SI_WiiU_SuperMario3DWorld.jpg",
+                caption: "Super Mario 3D World (2013) - Four-player cooperative 3D platforming",
+                title: "Super Mario 3D World",
+                year: 2013,
+                description: "Four-player cooperative 3D platforming",
+                category: "3d"
+            },
+            {
+                src: "https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000001620/2b166fb3197dacfde1d939acd6a976b9fbe3b1a32c54f9f0d2c8d23efb22412d",
+                caption: "Luigi's Mansion 3 (2019) - Mario's brother hunts ghosts in a haunted hotel",
+                title: "Luigi's Mansion 3",
+                year: 2019,
+                description: "Mario's brother hunts ghosts in a haunted hotel",
+                category: "spinoff"
+            },
+            {
+                src: "https://i.ytimg.com/vi/JStAYvbeSHc/maxresdefault.jpg",
+                caption: "Super Mario Bros. Wonder (2023) - Latest 2D adventure with Wonder Flowers",
+                title: "Super Mario Bros. Wonder",
+                year: 2023,
+                description: "Latest 2D adventure with Wonder Flowers",
+                category: "2d"
+            }
+        ];
+
+        // DOM Elements
+        const gallery = document.getElementById('gallery');
+        const galleryContainer = document.getElementById('galleryContainer');
+        const thumbnailsContainer = document.getElementById('thumbnails');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const playBtn = document.getElementById('playBtn');
+        const playBtnText = document.getElementById('playBtnText');
+        const progressBar = document.getElementById('progress');
+        const loader = document.getElementById('loader');
+        const pagination = document.getElementById('pagination');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const infoPanel = document.getElementById('infoPanel');
+        const gameTitle = document.getElementById('gameTitle');
+        const gameDescription = document.getElementById('gameDescription');
+        const filterBar = document.getElementById('filterBar');
+        const marioCharacter = document.getElementById('marioCharacter');
+
+        // Variables
+        let currentIndex = 0;
+        let startX = 0;
+        let isDragging = false;
+        let autoplayInterval = null;
+        let isAutoPlaying = false;
+        let isFullscreen = false;
+        let filteredImages = [...images];
+        let touchStartTime = 0;
+        let touchEndTime = 0;
+        let touchDistance = 0;
+
+        // Audio effects
+        const audioEffects = {
+            slide: new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='),
+            click: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='),
+            success: new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='),
+            jump: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=')
+        };
+
+        // Function to play audio effects with volume control
+        function playSound(type) {
+            // Create clones to allow overlapping sounds
+            const sound = audioEffects[type].cloneNode();
+            sound.volume = 0.5; // Adjust volume
+            sound.play().catch(e => console.log("Audio play prevented:", e));
+        }
+
+        // Function to debounce events
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+// Initialize gallery
+function initGallery() {
+    // Create gallery items
+    filteredImages.forEach((image, index) => {
+        const galleryItem = document.createElement('div');
+        galleryItem.className = `gallery-item ${index === 0 ? 'active' : ''}`;
+        galleryItem.innerHTML = `
+            <img src="${image.src}" alt="${image.title}">
+            <div class="caption">
+                <h3>${image.title} (${image.year})</h3>
+                <p>${image.description}</p>
+            </div>
+        `;
+        gallery.appendChild(galleryItem);
+        
+        // Create thumbnails
+        const thumbnail = document.createElement('div');
+        thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+        thumbnail.innerHTML = `<img src="${image.src}" alt="${image.title}">`;
+        thumbnail.addEventListener('click', () => {
+            goToSlide(index);
+            playSound('click');
+        });
+        thumbnailsContainer.appendChild(thumbnail);
+        
+        // Create pagination dots
+        const dot = document.createElement('div');
+        dot.className = `pagination-dot ${index === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+            playSound('click');
+        });
+        pagination.appendChild(dot);
+    });
+    
+    // Update info panel
+    updateInfoPanel();
+}
+
+// Go to specific slide
+function goToSlide(index) {
+    currentIndex = index;
+    updateGallery();
+    updateThumbnails();
+    updatePagination();
+    updateProgress();
+    updateInfoPanel();
+}
+
+// Update gallery position
+function updateGallery() {
+    gallery.style.transform = `translateX(-${currentIndex * 100}%)`;
+    
+    // Update active state for gallery items
+    const items = document.querySelectorAll('.gallery-item');
+    items.forEach((item, index) => {
+        if (index === currentIndex) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+
+// Update thumbnails active state
+function updateThumbnails() {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    thumbnails.forEach((thumbnail, index) => {
+        if (index === currentIndex) {
+            thumbnail.classList.add('active');
+            thumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+            thumbnail.classList.remove('active');
+        }
+    });
+}
+
+// Update pagination dots
+function updatePagination() {
+    const dots = document.querySelectorAll('.pagination-dot');
+    dots.forEach((dot, index) => {
+        if (index === currentIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+// Update progress bar
+function updateProgress() {
+    const progress = ((currentIndex + 1) / filteredImages.length) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+// Update info panel
+function updateInfoPanel() {
+    const currentImage = filteredImages[currentIndex];
+    gameTitle.textContent = `${currentImage.title} (${currentImage.year})`;
+    gameDescription.textContent = currentImage.description;
+}
+
+// Go to next slide
+function nextSlide() {
+    if (currentIndex < filteredImages.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0;
+    }
+    updateGallery();
+    updateThumbnails();
+    updatePagination();
+    updateProgress();
+    updateInfoPanel();
+    playSound('slide');
+}
+
+// Go to previous slide
+function prevSlide() {
+    if (currentIndex > 0) {
+        currentIndex--;
+    } else {
+        currentIndex = filteredImages.length - 1;
+    }
+    updateGallery();
+    updateThumbnails();
+    updatePagination();
+    updateProgress();
+    updateInfoPanel();
+    playSound('slide');
+}
+
+// Toggle autoplay
+function toggleAutoplay() {
+    if (isAutoPlaying) {
+        clearInterval(autoplayInterval);
+        isAutoPlaying = false;
+        playBtnText.textContent = 'Auto Play';
+    } else {
+        autoplayInterval = setInterval(nextSlide, 3000);
+        isAutoPlaying = true;
+        playBtnText.textContent = 'Stop';
+    }
+}
+
+// Toggle fullscreen
+function toggleFullscreen() {
+    if (!isFullscreen) {
+        if (galleryContainer.requestFullscreen) {
+            galleryContainer.requestFullscreen();
+        } else if (galleryContainer.mozRequestFullScreen) {
+            galleryContainer.mozRequestFullScreen();
+        } else if (galleryContainer.webkitRequestFullscreen) {
+            galleryContainer.webkitRequestFullscreen();
+        } else if (galleryContainer.msRequestFullscreen) {
+            galleryContainer.msRequestFullscreen();
+        }
+        isFullscreen = true;
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        isFullscreen = false;
+    }
+}
+
+// Handle filter clicks
+function handleFilter(category) {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        if (btn.dataset.filter === category) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Filter images
+    if (category === 'all') {
+        filteredImages = [...images];
+    } else {
+        filteredImages = images.filter(image => image.category === category);
+    }
+    
+    // Reset gallery
+    currentIndex = 0;
+    gallery.innerHTML = '';
+    thumbnailsContainer.innerHTML = '';
+    pagination.innerHTML = '';
+    
+    // Reinitialize gallery
+    initGallery();
+    updateGallery();
+    updateProgress();
+    
+    playSound('success');
+}
+
+// Create random coins
+function createRandomCoin() {
+    const coin = document.createElement('div');
+    coin.className = 'coin';
+    coin.style.left = `${Math.random() * 100}vw`;
+    coin.style.top = `${Math.random() * 100}vh`;
+    document.body.appendChild(coin);
+    
+    // Remove coin after animation
+    setTimeout(() => {
+        document.body.removeChild(coin);
+    }, 2000);
+}
+
+// Event listeners
+prevBtn.addEventListener('click', () => {
+    prevSlide();
+    playSound('click');
+});
+
+nextBtn.addEventListener('click', () => {
+    nextSlide();
+    playSound('click');
+});
+
+playBtn.addEventListener('click', () => {
+    toggleAutoplay();
+    playSound('click');
+});
+
+fullscreenBtn.addEventListener('click', () => {
+    toggleFullscreen();
+    playSound('click');
+});
+
+// Touch events for swipe
+galleryContainer.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    touchStartTime = new Date().getTime();
+});
+
+galleryContainer.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    
+    const currentX = e.touches[0].clientX;
+    const diffX = currentX - startX;
+    touchDistance = diffX;
+    
+    // Limit drag
+    const translateX = -currentIndex * 100 + (diffX / galleryContainer.offsetWidth) * 100;
+    if (translateX <= 0 && translateX >= -((filteredImages.length - 1) * 100)) {
+        gallery.style.transform = `translateX(${translateX}%)`;
+    }
+});
+
+galleryContainer.addEventListener('touchend', e => {
+    isDragging = false;
+    touchEndTime = new Date().getTime();
+    
+    const swipeTime = touchEndTime - touchStartTime;
+    const isQuickSwipe = swipeTime < 300 && Math.abs(touchDistance) > 30;
+    
+    if (touchDistance > 100 || (isQuickSwipe && touchDistance > 0)) {
+        prevSlide();
+    } else if (touchDistance < -100 || (isQuickSwipe && touchDistance < 0)) {
+        nextSlide();
+    } else {
+        updateGallery(); // Reset to current slide
+    }
+});
+
+// Mouse events for drag
+galleryContainer.addEventListener('mousedown', e => {
+    startX = e.clientX;
+    isDragging = true;
+    galleryContainer.style.cursor = 'grabbing';
+    e.preventDefault();
+});
+
+galleryContainer.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    
+    const currentX = e.clientX;
+    const diffX = currentX - startX;
+    
+    // Limit drag
+    const translateX = -currentIndex * 100 + (diffX / galleryContainer.offsetWidth) * 100;
+    if (translateX <= 0 && translateX >= -((filteredImages.length - 1) * 100)) {
+        gallery.style.transform = `translateX(${translateX}%)`;
+    }
+});
+
+galleryContainer.addEventListener('mouseup', e => {
+    if (!isDragging) return;
+    
+    isDragging = false;
+    galleryContainer.style.cursor = 'grab';
+    
+    const currentX = e.clientX;
+    const diffX = currentX - startX;
+    
+    if (diffX > 100) {
+        prevSlide();
+    } else if (diffX < -100) {
+        nextSlide();
+    } else {
+        updateGallery(); // Reset to current slide
+    }
+});
+
+galleryContainer.addEventListener('mouseleave', () => {
+    if (isDragging) {
+        isDragging = false;
+        galleryContainer.style.cursor = 'grab';
+        updateGallery(); // Reset to current slide
+    }
+});
+
+// Filter buttons event listeners
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        handleFilter(btn.dataset.filter);
+    });
+});
+
+// Mario character click event
+marioCharacter.addEventListener('click', () => {
+    createRandomCoin();
+    playSound('jump');
+    marioCharacter.style.transform = 'scale(1.2) translateY(-20px)';
+    setTimeout(() => {
+        marioCharacter.style.transform = '';
+    }, 500);
+});
+
+// Fullscreen change event
+document.addEventListener('fullscreenchange', () => {
+    isFullscreen = !!document.fullscreenElement;
+});
+
+// Loader
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        // Initialize the gallery
+        initGallery();
+        
+        // Create some initial coins
+        for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+                createRandomCoin();
+            }, i * 500);
+        }
+    }, 1500);
+});
+
+// Handle keyboard navigation
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') {
+        prevSlide();
+    } else if (e.key === 'ArrowRight') {
+        nextSlide();
+    } else if (e.key === ' ') {
+        toggleAutoplay();
+        e.preventDefault();
+    } else if (e.key === 'f') {
+        toggleFullscreen();
+    }
+});
+
+// Optimize performance with debounce for resize events
+window.addEventListener('resize', debounce(() => {
+    updateGallery();
+}, 100));
+
+// Prevent default behavior on images to avoid dragging issues
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('dragstart', e => e.preventDefault());
+});
+</script>
+</body>   
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LMS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #0a08149a;
+            --secondary: #04101d;
+            --accent: #00c9ff;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --success: #2dd36f;
+            --warning: #ffc409;
+            --danger: #eb445a;
+            --gray-light: #e9ecef;
+            --shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 10px 20px rgba(76, 37, 245, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://giffiles.alphacoders.com/360/36033.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+            /* Removed the linear-gradient and background-color */
+        }
+
+        .container {
+            max-width: 400px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.8s ease-in-out;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.15);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: var(--accent);
+            bottom: -10px;
+            left: 25%;
+            border-radius: 2px;
+            animation: slideIn 1s ease forwards;
+        }
+
+        input, button, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: var(--dark);
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 201, 255, 0.2);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background-color: #3051d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 5px;
+            transition: var(--transition);
+            height: 20px;
+        }
+
+        .password-container, .password-container-confirm {
+            position: relative;
+        }
+
+        .show-password, .show-password-confirm {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .show-password:hover, .show-password-confirm:hover {
+            color: var(--accent);
+        }
+
+        .back-to-login {
+            background-color: var(--secondary);
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        .back-to-login:hover {
+            background-color: #0c1e33;
+        }
+        
+        .security-question {
+            margin-top: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { width: 0; left: 50%; }
+            to { width: 50%; left: 25%; }
+        }
+
+        /* Individual field animations */
+        input, select, .password-container, .password-container-confirm {
+            animation: fadeField 0.5s ease backwards;
+        }
+
+        @keyframes fadeField {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        input:nth-child(1) { animation-delay: 0.1s; }
+        input:nth-child(2) { animation-delay: 0.2s; }
+        .password-container { animation-delay: 0.3s; }
+        .password-container-confirm { animation-delay: 0.4s; }
+        .security-question { animation-delay: 0.5s; }
+        select#role { animation-delay: 0.6s; }
+        button { animation-delay: 0.7s; }
+        .back-to-login { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Create an Account</h2>
+        <input type="text" id="name" placeholder="Enter Name" required>
+        <input type="email" id="email" placeholder="Enter Email" required>
+
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <span class="show-password" onclick="togglePassword()">Show</span>
+        </div>
+
+        <div class="password-container-confirm">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <span class="show-password-confirm" onclick="toggleConfirmPassword()">Show</span>
+        </div>
+
+        <select id="securityQuestion" class="security-question">
+            <option value="">Select Security Question</option>
+            <option value="What was your first pet's name?">What was your first pet's name?</option>
+            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+            <option value="What city were you born in?">What city were you born in?</option>
+            <option value="What was the make of your first car?">What was the make of your first car?</option>
+            <option value="What was the name of your elementary school?">What was the name of your elementary school?</option>
+        </select>
+        <input type="text" id="securityAnswer" placeholder="Answer to Security Question" required>
+
+        <select id="role">
+            <option value="Student">Student</option>
+            <option value="Instructor">Instructor</option>
+            <option value="Admin">Admin</option>
+        </select>
+
+        <button onclick="register()">Register</button>
+        <button class="back-to-login" onclick="goToLogin()">Back to Login</button>
+        <p id="errorMessage" class="error"></p>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const showPasswordText = document.querySelector('.show-password');
+            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+            showPasswordText.textContent = passwordField.type === 'password' ? 'Show' : 'Hide';
+        }
+
+        function toggleConfirmPassword() {
+            const confirmPasswordField = document.getElementById('confirmPassword');
+            const showConfirmPasswordText = document.querySelector('.show-password-confirm');
+            confirmPasswordField.type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+            showConfirmPasswordText.textContent = confirmPasswordField.type === 'password' ? 'Show' : 'Hide';
+        }
+
+        function register() {
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirmPassword").value.trim();
+            const securityQuestion = document.getElementById("securityQuestion").value.trim();
+            const securityAnswer = document.getElementById("securityAnswer").value.trim();
+            const role = document.getElementById("role").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            // Reset error message
+            errorMessage.textContent = "";
+
+            if (!name || !email || !password || !confirmPassword || !securityQuestion || !securityAnswer) {
+                errorMessage.textContent = "All fields are required.";
+                return;
+            }   
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match.";
+                return;
+            }
+
+            if (password.length < 6) {
+                errorMessage.textContent = "Password must be at least 6 characters.";
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            let accountsLibrary = JSON.parse(localStorage.getItem("accountsLibrary")) || [];
+
+            // Check if email exists and is marked as deleted
+            const deletedUser = users.find(user => user.email === email && user.deleted);
+            const deletedAccount = accountsLibrary.find(account => account.email === email && account.deleted);
+
+            if (deletedUser || deletedAccount) {
+                errorMessage.textContent = "This account has been deleted. Please contact support.";
+                return;
+            }
+
+            if (users.some(user => user.email === email)) {
+                errorMessage.textContent = "Email already registered.";
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(), // Unique identifier
+                name,
+                email,
+                password,
+                securityQuestion,
+                securityAnswer,
+                role,
+                lastLogin: "First time login"
+            };
+
+            users.push(newUser);
+            accountsLibrary.push({
+                id: newUser.id,
+                name,
+                email,
+                password,
+                securityQuestion,
+                securityAnswer,
+                role,
+                registeredAt: new Date().toLocaleString()
+            });
+
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("accountsLibrary", JSON.stringify(accountsLibrary));
+
+            alert("Account created successfully! You can now log in.");
+            window.location.href = "login.html";
+        }   
+
+        function goToLogin() {
+            window.location.href = "login.html";
+        }
+    </script>
+
+</body>
+</html>

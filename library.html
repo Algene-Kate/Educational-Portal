@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library of Accounts - CodeStruct</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #0a08149a;
+            --secondary: #04101d;
+            --accent: #00c9ff;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --success: #2dd36f;
+            --warning: #ffc409;
+            --danger: #eb445a;
+            --gray-light: #e9ecef;
+            --shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 10px 20px rgba(76, 37, 245, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light);
+            color: var(--dark);
+            background-image: linear-gradient(to bottom, #f8f9fa, #e8eaf6);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            overflow: auto;
+            margin: 2rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            font-weight: 800;
+            width: 100%;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        table th {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            font-weight: 600;
+        }
+
+        table td {
+            background-color: white;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        table tr:hover td {
+            background-color: rgba(76, 37, 245, 0.05);
+        }
+
+        .delete-btn {
+            background-color: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: var(--transition);
+            margin-bottom: 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(235, 68, 90, 0.3);
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(235, 68, 90, 0.4);
+        }
+
+        .promote-btn {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(76, 37, 245, 0.3);
+        }
+
+        .promote-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 37, 245, 0.4);
+        }
+
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-to-dashboard {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 37, 245, 0.4);
+        }
+
+        .back-to-dashboard:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .back-to-dashboard:hover:before {
+            left: 100%;
+        }
+
+        .back-to-dashboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 37, 245, 0.5);
+        }
+
+        .empty-message {
+            background-color: var(--warning);
+            color: var(--dark);
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--primary);
+        }
+
+        .role-select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: 1px solid var(--gray-light);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .role-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(76, 37, 245, 0.2);
+        }
+
+        .confirm-promote {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .confirm-promote:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 37, 245, 0.4);
+        }
+        
+        .modal h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            .button-container {
+                display: flex;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 0.8rem;
+            }
+            
+            .delete-btn, .promote-btn {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .back-to-dashboard {
+                padding: 0.8rem 1.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Library of Accounts</h2>
+        <table id="accountsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Registered At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <button class="back-to-dashboard" onclick="goToDashboard()">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div id="promoteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Promote User</h3>
+            <p id="promoteUserInfo">User: </p>
+            <select id="roleSelect" class="role-select">
+                <option value="student">Student</option>
+                <option value="instructor">Instructor</option>
+                <option value="admin">Admin</option>
+            </select>
+            <button class="confirm-promote" onclick="confirmPromote()">Confirm Promotion</button>
+        </div>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    
+        // If not logged in or not an admin, redirect to dashboard or login page
+        if (!loggedInUser) {
+            alert("You must be logged in to access this page.");
+            window.location.href = 'login.html';
+        return;
+        }
+    
+        // Check role - only allow admins
+        if (loggedInUser.role.toLowerCase() !== 'admin') {
+            alert("Access denied. This page is only accessible to administrators.");
+            window.location.href = 'dashboard.html'; // Redirect to dashboard
+        return;
+        }
+    
+        // If code reaches here, the user is an admin and can access the page
+        console.log("Admin access verified");
+    });
+
+        let currentAccountId = null;
+
+        function loadAccounts() {
+            const accountsLibrary = JSON.parse(localStorage.getItem("accountsLibrary")) || [];
+            const tableBody = document.getElementById("accountsTable").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            // Filter out deleted accounts
+            const activeAccounts = accountsLibrary.filter(account => !account.deleted);
+
+            if (activeAccounts.length > 0) {
+                activeAccounts.forEach((account) => {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${account.id}</td> 
+                        <td>${account.name}</td>
+                        <td>${account.email}</td>
+                        <td>${account.role}</td>
+                        <td>${account.registeredAt}</td>
+                        <td class="action-buttons">
+                            <button class="delete-btn" onclick="deleteAccount('${account.id}')">Delete</button>
+                            <button class="promote-btn" onclick="openPromoteModal('${account.id}', '${account.name}', '${account.role}')">Promote</button>
+                        </td>
+                    `;
+                });
+            } else {
+                const row = tableBody.insertRow();
+                row.innerHTML = `<td colspan="6">No accounts found.</td>`;
+            }
+        }
+
+        function deleteAccount(accountId) {
+            let accountsLibrary = JSON.parse(localStorage.getItem("accountsLibrary")) || [];
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Mark account as deleted in both `accountsLibrary` and `users`
+            accountsLibrary = accountsLibrary.map(account => {
+                if (String(account.id) === String(accountId)) {
+                    account.deleted = true;
+                }
+                return account;
+            });
+
+            users = users.map(user => {
+                if (String(user.id) === String(accountId)) {
+                    user.deleted = true;
+                }
+                return user;
+            });
+
+            localStorage.setItem("accountsLibrary", JSON.stringify(accountsLibrary));
+            localStorage.setItem("users", JSON.stringify(users));
+
+            loadAccounts(); // Reload the accounts list
+            alert(`Account with ID ${accountId} has been marked as deleted.`);
+        }
+
+        function openPromoteModal(accountId, name, currentRole) {
+            const modal = document.getElementById("promoteModal");
+            const userInfo = document.getElementById("promoteUserInfo");
+            const roleSelect = document.getElementById("roleSelect");
+            
+            currentAccountId = accountId;
+            userInfo.textContent = `User: ${name} (Current Role: ${currentRole})`;
+            
+            // Set the current role as the default selected option
+            for (let i = 0; i < roleSelect.options.length; i++) {
+                if (roleSelect.options[i].value === currentRole.toLowerCase()) {
+                    roleSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("promoteModal");
+            modal.style.display = "none";
+            currentAccountId = null;
+        }
+
+        function confirmPromote() {
+            if (!currentAccountId) return;
+            
+            const newRole = document.getElementById("roleSelect").value;
+            let accountsLibrary = JSON.parse(localStorage.getItem("accountsLibrary")) || [];
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            
+            // Update role in both collections
+            accountsLibrary = accountsLibrary.map(account => {
+                if (String(account.id) === String(currentAccountId)) {
+                    account.role = newRole;
+                }
+                return account;
+            });
+            
+            users = users.map(user => {
+                if (String(user.id) === String(currentAccountId)) {
+                    user.role = newRole;
+                }
+                return user;
+            });
+            
+            localStorage.setItem("accountsLibrary", JSON.stringify(accountsLibrary));
+            localStorage.setItem("users", JSON.stringify(users));
+            
+            closeModal();
+            loadAccounts(); // Refresh table
+            alert(`User role has been updated to ${newRole}.`);
+        }
+
+        function goToDashboard() {
+            window.location.href = "dashboard.html";
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("promoteModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        window.onload = loadAccounts;
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrolled Students - CodeStruct</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #0a08149a;
+            --secondary: #04101d;
+            --accent: #00c9ff;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --success: #2dd36f;
+            --warning: #ffc409;
+            --danger: #eb445a;
+            --gray-light: #e9ecef;
+            --shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 10px 20px rgba(76, 37, 245, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light);
+            color: var(--dark);
+            background-image: linear-gradient(to bottom, #f8f9fa, #e8eaf6);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            overflow: auto;
+            margin: 2rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            font-weight: 800;
+            width: 100%;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        table th {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            font-weight: 600;
+        }
+
+        table td {
+            background-color: white;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        table tr:hover td {
+            background-color: rgba(76, 37, 245, 0.05);
+        }
+
+        .remove-btn {
+            background-color: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: var(--transition);
+            margin-bottom: 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(235, 68, 90, 0.3);
+        }
+
+        .remove-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(235, 68, 90, 0.4);
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .course-select {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--gray-light);
+            outline: none;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(76, 37, 245, 0.2);
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 37, 245, 0.4);
+        }
+
+        .nav-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .nav-button:hover:before {
+            left: 100%;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 37, 245, 0.5);
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 20px;
+            border-radius: 50px 0 0 50px;
+            border: 1px solid var(--gray-light);
+            border-right: none;
+            outline: none;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(76, 37, 245, 0.2);
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 37, 245, 0.4);
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .no-students {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-pending {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .edit-btn {
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: var(--transition);
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content h3 {
+    color: var(--primary);
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    outline: none;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    background-color: var(--gray-light);
+    color: var(--dark);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-save {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+}
+
+.btn-cancel:hover {
+    background-color: #d1d1d1;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+}
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-button {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .course-select {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 0.8rem;
+            }
+            
+            .remove-btn {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Enrolled Students</h2>
+        
+        <div class="controls-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email...">
+                <button class="search-btn" onclick="searchStudents()">Search</button>
+            </div>
+            
+            <div class="filter-controls">
+                <select id="courseSelect" class="course-select" onchange="loadEnrollments()">
+                    <option value="all">All Courses</option>
+                    <!-- Course options will be populated by JavaScript -->
+                </select>
+            </div>
+        </div>
+        
+        <table id="enrollmentsTable">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Email</th>
+                    <th>Contact No.</th>
+                    <th>Address</th>
+                    <th>Course</th>
+                    <th>Enrollment Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <button class="nav-button" onclick="goBack()">Back</button>
+            <button class="nav-button" onclick="window.location.href='enrollment.html'">Go to Enrollment Page</button>
+        </div>
+    </div>
+
+    <script>
+// Function to load enrollments from localStorage
+function loadEnrollments() {
+    // Get the students data saved by the enrollment form
+    const students = JSON.parse(localStorage.getItem('students')) || [];
+    const courseFilter = document.getElementById('courseSelect').value;
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    
+    const tableBody = document.querySelector('#enrollmentsTable tbody');
+    tableBody.innerHTML = '';
+
+    // Populate course select options if empty
+    const courseSelect = document.getElementById('courseSelect');
+    if (courseSelect.options.length === 1) { // Only has "All Courses" option
+        const allCourses = new Set();
+        students.forEach(student => {
+            student.courses.forEach(course => {
+                allCourses.add(course);
+            });
+        });
+        
+        allCourses.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseSelect.appendChild(option);
+        });
+    }
+    
+    if (students.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="9" class="no-students">No students enrolled yet</td></tr>';
+        return;
+    }
+
+    // For each student, create entries for each of their courses
+    students.forEach((student, index) => {
+        // Check if student matches search query
+        const nameMatch = student.personalInfo.fullName.toLowerCase().includes(searchQuery);
+        const emailMatch = student.personalInfo.email.toLowerCase().includes(searchQuery);
+        const addressMatch = student.personalInfo.address.toLowerCase().includes(searchQuery);
+        const phoneMatch = student.personalInfo.phone.toLowerCase().includes(searchQuery);
+        
+        if (!nameMatch && !emailMatch && !addressMatch && !phoneMatch) return;
+        
+        student.courses.forEach(course => {
+            // Apply course filter
+            if (courseFilter !== 'all' && course !== courseFilter) return;
+            
+            const row = document.createElement('tr');
+            
+            // Generate a student ID based on their index
+            const studentId = `ST${(index + 1).toString().padStart(3, '0')}`;
+            
+            // Create enrollment date from object creation time or use current date
+            const enrollmentDate = new Date().toLocaleDateString();
+            
+            // Set status to "Active"
+            const status = 'Active';
+            const statusClass = 'status-active';
+
+            
+            // Format address for display - truncate if too long
+            const shortAddress = student.personalInfo.address.length > 30 ? 
+                student.personalInfo.address.substring(0, 27) + '...' : student.personalInfo.address;
+            
+            row.innerHTML = `
+                <td>${studentId}</td>
+                <td>${student.personalInfo.fullName}</td>
+                <td>${student.personalInfo.email}</td>
+                <td>${student.personalInfo.phone}</td>
+                <td title="${student.personalInfo.address}">${shortAddress}</td>
+                <td>${course}</td>
+                <td>${enrollmentDate}</td>
+                <td><span class="status-badge ${statusClass}">${status}</span></td>
+                <td>
+                    <button class="edit-btn" onclick="editStudent(${index}, '${course}')">Edit</button>
+                    <button class="remove-btn" onclick="removeStudent(${index}, '${course}')">Remove</button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+    });
+}
+
+function searchStudents() {
+    loadEnrollments();
+}
+
+function removeStudent(index, course) {
+    if (!confirm('Are you sure you want to remove this enrollment?')) return;
+    
+    const students = JSON.parse(localStorage.getItem('students')) || [];
+    
+    // If student has multiple courses, just remove the specific course
+    if (students[index].courses.length > 1) {
+        const courseIndex = students[index].courses.indexOf(course);
+        if (courseIndex > -1) {
+            students[index].courses.splice(courseIndex, 1);
+        }
+    } else {
+        // If this is their only course, remove the entire student
+        students.splice(index, 1);
+    }
+    
+    localStorage.setItem('students', JSON.stringify(students));
+    loadEnrollments();
+    alert('Enrollment removed successfully');
+}
+
+function editStudent(index, course) {
+    const students = JSON.parse(localStorage.getItem('students')) || [];
+    const student = students[index];
+    
+    if (!student) {
+        alert('Student not found!');
+        return;
+    }
+    
+    // Create modal for editing
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    modalContent.innerHTML = `
+        <h3>Edit Student Information</h3>
+        <form id="editStudentForm">
+            <div class="form-group">
+                <label for="editName">Full Name:</label>
+                <input type="text" id="editName" value="${student.personalInfo.fullName}" required>
+            </div>
+            <div class="form-group">
+                <label for="editEmail">Email:</label>
+                <input type="email" id="editEmail" value="${student.personalInfo.email}" required>
+            </div>
+            <div class="form-group">
+                <label for="editPhone">Phone:</label>
+                <input type="tel" id="editPhone" value="${student.personalInfo.phone}" required>
+            </div>
+            <div class="form-group">
+                <label for="editAddress">Address:</label>
+                <textarea id="editAddress" rows="3" required>${student.personalInfo.address}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Current Course: ${course}</label>
+                <select id="editCourse">
+                    <option value="${course}" selected>${course}</option>
+                    <option value="HTML Fundamentals">HTML Fundamentals</option>
+                    <option value="CSS Styling Mastery">CSS Styling Mastery</option>
+                    <option value="Java Programming">Java Programming</option>
+                    <option value="JavaScript Programming">JavaScript Programming</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    `;
+    
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+    
+    // Add event listener to form submission
+    document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Update student information
+        student.personalInfo.fullName = document.getElementById('editName').value;
+        student.personalInfo.email = document.getElementById('editEmail').value;
+        student.personalInfo.phone = document.getElementById('editPhone').value;
+        student.personalInfo.address = document.getElementById('editAddress').value;
+        
+        // Handle course change if needed
+        const newCourse = document.getElementById('editCourse').value;
+        if (newCourse !== course) {
+            const courseIndex = student.courses.indexOf(course);
+            if (courseIndex > -1) {
+                student.courses[courseIndex] = newCourse;
+            }
+        }
+        
+        // Save changes
+        localStorage.setItem('students', JSON.stringify(students));
+        
+        // Close modal and refresh table
+        closeModal();
+        loadEnrollments();
+        alert('Student information updated successfully!');
+    });
+}
+
+function closeModal() {
+    const modalOverlay = document.querySelector('.modal-overlay');
+    if (modalOverlay) {
+        document.body.removeChild(modalOverlay);
+    }
+}
+
+function goBack() {
+    window.history.back();
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadEnrollments();
+});
+    </script>    
+
+</body>
+</html>

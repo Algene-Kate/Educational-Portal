@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CodeStruct | Web Development Learning Portal</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --warning: #ffaa00;
+            --danger: #d90429;
+            --gray-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        /* Navigation */
+        header {
+            background-color: white;
+            color: var(--dark);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 48px;
+            width: auto;
+        }
+
+        /* Modified navigation to center links */
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://manilarecruitment.com/wp-content/uploads/2024/05/DR20240312-Banner-without-Text.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 7rem 1rem;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Course Cards Section */
+        .courses {
+            padding: 3rem 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-img {
+            height: 180px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-img.html {
+            background-color: #e44d26;
+        }
+
+        .course-img.css {
+            background-color: #264de4;
+        }
+
+        .course-img.js {
+            background-color: #f7df1e;
+        }
+
+        .course-img.java {
+            background-color: #5382a1;
+        }
+
+        .course-img span {
+            font-size: 6rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .course-content p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
+            background-color: var(--gray-light);
+            padding: 4rem 5%;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-item h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-item p {
+            color: #6c757d;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 4rem 1rem;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-light {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        .btn-light:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 5% 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h4:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .footer-column p {
+            color: #adb5bd;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #adb5bd;
+        }
+
+        /* No Results Message */
+        .no-results {
+            color: var(--danger);
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll to top button */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 37, 245, 0.5);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        #scrollToTopBtn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(76, 37, 245, 0.6);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .logo img {
+                height: 40px;
+            }
+
+            nav {
+                margin: 1rem 0;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="CodeStruct Logo">
+        </div>
+
+        <nav>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html">Courses</a>
+                <a href="About us.html">About Us</a>
+                <a href="Contact us.html">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h2>Unlock Your Web Development Potential</h2>
+            <p>Master HTML, CSS, JavaScript, and Java through our comprehensive courses and resources. Whether you're a
+                beginner or looking to enhance your skills, CodeStruct provides the guidance you need at every step of
+                your learning journey.</p>
+            <a href="login.html" class="btn btn-primary">Log In</a>
+            <a href="register.html" class="btn btn-outline">Sign Up Free</a>
+        </div>
+    </section>
+
+    <section id="courses" class="courses">
+        <div class="section-title">
+            <h3>Our Featured Courses</h3>
+            <p>Discover our most popular web development courses designed to help you gain practical skills for the
+                modern tech industry.</p>
+        </div>
+
+        <div class="course-grid">
+            <div class="course-card">
+                <div class="course-img html">
+                    <span>&lt;/&gt;</span>
+                </div>
+                <div class="course-content">
+                    <h4>HTML Fundamentals</h4>
+                    <p>Learn the building blocks of the web with our comprehensive HTML course. Master semantic markup
+                        and build structured web pages.</p>
+                    <a href="login.html" class="btn btn-outline">Start Learning</a>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="course-img css">
+                    <span>{ }</span>
+                </div>
+                <div class="course-content">
+                    <h4>CSS Styling Mastery</h4>
+                    <p>Transform your HTML with CSS. Learn layouts, animations, responsive design, and modern CSS
+                        frameworks.</p>
+                    <a href="login.html" class="btn btn-outline">Start Learning</a>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="course-img js">
+                    <span>JS</span>
+                </div>
+                <div class="course-content">
+                    <h4>JavaScript Programming</h4>
+                    <p>Add interactivity to your websites with JavaScript. Learn DOM manipulation, events, and modern
+                        ES6+ features.</p>
+                    <a href="login.html" class="btn btn-outline">Start Learning</a>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="course-img java">
+                    <span>☕</span>
+                </div>
+                <div class="course-content">
+                    <h4>Java Development</h4>
+                    <p>Master Java programming for backend development. Learn OOP concepts, data structures, and
+                        server-side applications.</p>
+                    <a href="login.html" class="btn btn-outline">Start Learning</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="section-title">
+            <h3>Why Choose CodeStruct?</h3>
+            <p>Our platform offers unique advantages to help you succeed on your coding journey.</p>
+        </div>
+
+        <div class="features-container">
+            <div class="feature-item">
+                <div class="feature-icon">📚</div>
+                <h4>Comprehensive Curriculum</h4>
+                <p>Our courses cover everything from fundamentals to advanced topics, ensuring a complete learning
+                    experience.</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">💻</div>
+                <h4>Hands-On Projects</h4>
+                <p>Apply your knowledge through real-world projects that build your portfolio and prepare you for
+                    employment.</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">👥</div>
+                <h4>Community Support</h4>
+                <p>Join our active community of learners and mentors to get help and collaborate on projects.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-content">
+            <h3>Ready to Start Learning?</h3>
+            <p>Join thousands of students who have transformed their careers through our web development courses.</p>
+            <a href="enrollment.html" class="btn btn-light">Enroll Now!</a>
+        </div>
+    </section>
+
+    <button id="scrollToTopBtn" title="Go to top">↑</button>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About CodeStruct</h4>
+                <p>CodeStruct is dedicated to providing quality education in web development and programming. Our
+                    mission is to make coding accessible to everyone.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="login.html">All Courses</a></li>
+                    <li><a href="About us.html">About Us</a></li>
+                    <li><a href="Contact us.html">Contacts</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Contact Us</h4>
+                <p>Email: info@codestruct.edu</p>
+                <p>Phone: (555) 123-4567</p>
+                <p>Address: 123 Learning Street, Tech City, TC 12345</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="https://facebook.com" class="social-icon">f</a>
+                    <a href="https://twitter.com" class="social-icon">t</a>
+                    <a href="https://instagram.com" class="social-icon">in</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>&copy; 2025 CodeStruct | Education and Learning Portal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="no-results" id="no-results">
+        No results found for "<span id="search-term"></span>". Please try another search term.
+    </div>
+
+    <script>
+        // Scroll to top button
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        };
+
+        scrollToTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>

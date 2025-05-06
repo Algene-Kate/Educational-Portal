@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Course Enrollment Form</title>
+    <!-- Import the enrolled-students library -->
+    <script src="enrolled-students.html"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --warning: #ffaa00;
+            --danger: #d90429;
+            --gray-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--gray-light);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subheading {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--gray-light);
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+            outline: none;
+        }
+
+        .checkbox-group {
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 3px;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .checkbox-container:hover input~.checkmark {
+            border-color: var(--primary);
+        }
+
+        .checkbox-container input:checked~.checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked~.checkmark:after {
+            display: block;
+        }
+
+        .checkbox-container .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-container label {
+            margin-bottom: 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .class-type {
+            margin-top: 15px;
+        }
+
+        .class-type-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .terms-container {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            background-color: var(--gray-light);
+            margin-bottom: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--gray-light);
+        }
+
+        .terms-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terms-container::-webkit-scrollbar-track {
+            background: var(--gray-light);
+            border-radius: 5px;
+        }
+
+        .terms-container::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 5px;
+        }
+
+        .terms-container h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .terms-container p {
+            margin-bottom: 10px;
+        }
+
+        .terms-checkbox {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-submit {
+            background-color: var(--success);
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #2d9200;
+        }
+
+        .btn-submit svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .form-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .form-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-step::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            right: 50%;
+            height: 3px;
+            background-color: var(--gray-light);
+            z-index: 1;
+        }
+
+        .form-step:first-child::before {
+            left: 50%;
+            right: 0;
+        }
+
+        .form-step:last-child::before {
+            left: 0;
+            right: 50%;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: var(--gray-light);
+            color: var(--dark);
+            border-radius: 50%;
+            margin-bottom: 5px;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .form-step.active .step-number {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .step-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-step.active .step-title {
+            color: var(--primary);
+        }
+
+        .form-notification {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+            align-items: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-notification.success {
+            background-color: rgba(56, 176, 0, 0.1);
+            border-left: 4px solid var(--success);
+            color: var(--success);
+            display: flex;
+        }
+
+        .form-notification.error {
+            background-color: rgba(217, 4, 41, 0.1);
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+            display: flex;
+        }
+
+        .notification-icon {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .form-action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-prev,
+        .btn-next {
+            padding: 8px 16px;
+            /* Reduced padding */
+            font-size: 0.9rem;
+            /* Reduced font size */
+            flex: initial;
+            /* Remove flex:1 */
+            min-width: 100px;
+            /* Set minimum width */
+        }
+
+        .btn-prev {
+            background-color: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-prev:hover {
+            background-color: #dae0e5;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        /* Fix for checkboxes */
+        .checkbox-container input[type="checkbox"] {
+            opacity: 1;
+            /* Make checkboxes visible */
+            position: relative;
+            /* Put them back in the flow */
+            width: auto;
+            /* Reset width */
+            height: auto;
+            /* Reset height */
+            margin-right: 8px;
+            /* Add some spacing */
+            z-index: 2;
+            /* Ensure they're clickable */
+        }
+
+        /* Hide the custom checkmark when using standard checkboxes */
+        .checkbox-container .checkmark {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .form-progress {
+                display: none;
+            }
+
+            .step-title {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>IT Course Enrollment Form</h1>
+            <p class="subheading">Complete this form to register for our IT courses</p>
+        </header>
+
+        <div class="form-progress">
+            <div class="form-step active">
+                <div class="step-number">1</div>
+                <div class="step-title">Personal Info</div>
+            </div>
+            <div class="form-step">
+                <div class="step-number">2</div>
+                <div class="step-title">Course Selection</div>
+            </div>
+            <div class="form-step">
+                <div class="step-number">3</div>
+                <div class="step-title">Terms & Submit</div>
+            </div>
+        </div>
+
+        <div id="formNotification" class="form-notification">
+            <svg class="notification-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z"
+                    fill="currentColor" />
+            </svg>
+            <span id="notificationText">Message goes here</span>
+        </div>
+
+        <form id="enrollmentForm">
+            <!-- Personal Information -->
+            <div class="form-section active" id="section1">
+                <h2>Personal Information</h2>
+                <div class="form-group">
+                    <label for="fullName">Full Name <span class="required">*</span></label>
+                    <div class="input-container">
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <div class="input-container">
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <div class="input-container">
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address <span class="required">*</span></label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+
+                <div class="form-action-buttons">
+                    <button type="button" class="btn btn-next" onclick="EnrolledStudents.nextSection(1)">
+                        Next
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Course Selection -->
+            <div class="form-section" id="section2">
+                <h2>Course Selection</h2>
+                <p>Please select the course(s) you wish to enroll in:<span class="required"> *</span></p><br>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="webDev" name="courses" value="HTML Fundamentals">
+                        <span class="checkmark"></span>
+                        <label for="webDev">HTML Fundamentals</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="python" name="courses" value="CSS Styling Mastery">
+                        <span class="checkmark"></span>
+                        <label for="python">CSS Styling Mastery</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="java" name="courses" value="Java Programming">
+                        <span class="checkmark"></span>
+                        <label for="java">Java Programming</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="database" name="courses" value="JavaScript Programming">
+                        <span class="checkmark"></span>
+                        <label for="database">JavaScript Programming</label>
+                    </div>
+                </div>
+
+                <div class="class-type">
+                    <br><label>Class Type (You may select both) <span class="required">*</span></label>
+                    <div class="class-type-options">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="f2f" name="classType" value="Face-to-Face">
+                            <span class="checkmark"></span>
+                            <label for="f2f">Face-to-Face</label>
+                        </div>
+
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="online" name="classType" value="Online">
+                            <span class="checkmark"></span>
+                            <label for="online">Online</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-action-buttons">
+                    <button type="button" class="btn btn-prev" onclick="EnrolledStudents.prevSection(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-next" onclick="EnrolledStudents.nextSection(2)">
+                        Next
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="form-section" id="section3">
+                <h2>Terms and Conditions</h2>
+                <div class="terms-container">
+                    <h3>Enrollment Terms</h3>
+                    <p>Please read the following terms and conditions carefully before submitting your enrollment:</p>
+
+                    <p><strong>1. Payment Policy:</strong> Full payment is required to secure your place in the course.
+                        Payment plans are available upon request.</p>
+
+                    <p><strong>2. Cancellation Policy:</strong> Cancellations made 7 days or more before the course
+                        start date are eligible for a full refund. Cancellations made less than 7 days before the start
+                        date will incur a 25% cancellation fee.</p>
+
+                    <p><strong>3. Attendance:</strong> Students are expected to attend all scheduled classes. For
+                        face-to-face courses, a minimum of 80% attendance is required to receive a certificate of
+                        completion.</p>
+
+                    <p><strong>4. Online Access:</strong> Students enrolled in online courses will receive access
+                        credentials at least 24 hours before the course start date. Access is non-transferable and for
+                        personal use only.</p>
+
+                    <p><strong>5. Course Materials:</strong> All course materials provided remain the intellectual
+                        property of the institution. Reproduction or distribution of these materials is strictly
+                        prohibited.</p>
+
+                    <p><strong>6. Code of Conduct:</strong> Students are expected to maintain a respectful and
+                        professional demeanor during all interactions. Any form of discrimination or harassment will not
+                        be tolerated.</p>
+
+                    <p><strong>7. Technical Requirements:</strong> For online courses, students are responsible for
+                        ensuring they have the necessary equipment and internet connectivity to participate effectively.
+                    </p>
+
+                    <p><strong>8. Data Privacy:</strong> Personal information collected will be used solely for
+                        administrative purposes related to your enrollment and will be handled in accordance with our
+                        privacy policy.</p>
+
+                    <p><strong>9. Course Changes:</strong> The institution reserves the right to make changes to the
+                        course schedule, instructors, or content as necessary. Students will be notified of any
+                        significant changes.</p>
+
+                    <p><strong>10. Certification:</strong> Certificates will be issued only upon successful completion
+                        of all course requirements and assessments.</p>
+                </div>
+
+                <div class="checkbox-container terms-checkbox">
+                    <input type="checkbox" id="termsAccept" name="termsAccept" required>
+                    <span class="checkmark"></span>
+                    <label for="termsAccept">I have read and agree to the Terms and Conditions <span
+                            class="required">*</span></label>
+                </div>
+
+                <div class="form-action-buttons">
+                    <button type="button" class="btn btn-prev" onclick="EnrolledStudents.prevSection(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        Previous
+                    </button>
+                    <button type="submit" class="btn btn-submit" onclick="return EnrolledStudents.submitForm(event)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        Submit Enrollment
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="form-footer">
+            <p>For any inquiries, please contact our admissions office at admissions@itcourses.edu</p>
+        </div>
+    </div>
+
+    <script>
+        const EnrolledStudents = {
+            init: function(config) {
+                this.formId = config.formId;
+                this.notificationId = config.notificationId;
+                this.notificationTextId = config.notificationTextId;
+                this.sections = config.sections;
+                this.requiredFields = config.requiredFields;
+    
+                // Initialize the student library (using localStorage here)
+                if (!localStorage.getItem('students')) {
+                    localStorage.setItem('students', JSON.stringify([]));
+                }
+            },
+    
+            showNotification: function(message, type) {
+                let notification = document.getElementById(this.notificationId);
+                let notificationText = document.getElementById(this.notificationTextId);
+                notification.className = 'form-notification'; // Reset classes
+                notification.classList.add(type);
+                notificationText.textContent = message;
+                setTimeout(() => {
+                    notification.classList.remove(type);
+                }, 5000);
+            },
+    
+            nextSection: function(step) {
+                let currentSection = document.querySelector('.form-section.active');
+                currentSection.classList.remove('active');
+                let nextSection = document.getElementById('section' + (step + 1));
+                nextSection.classList.add('active');
+                
+                // Update progress indicator
+                document.querySelector(`.form-step:nth-child(${step})`).classList.remove('active');
+                document.querySelector(`.form-step:nth-child(${step + 1})`).classList.add('active');
+            },
+    
+            prevSection: function(step) {
+                let currentSection = document.querySelector('.form-section.active');
+                currentSection.classList.remove('active');
+                let prevSection = document.getElementById('section' + (step - 1));
+                prevSection.classList.add('active');
+                
+                // Update progress indicator
+                document.querySelector(`.form-step:nth-child(${step})`).classList.remove('active');
+                document.querySelector(`.form-step:nth-child(${step - 1})`).classList.add('active');
+            },
+    
+            validateForm: function() {
+                let valid = true;
+                
+                // Check required fields
+                document.querySelectorAll('.form-section.active input[required], .form-section.active textarea[required]').forEach((input) => {
+                    if (!input.value.trim()) {
+                        valid = false;
+                        input.classList.add('error-highlight');
+                    } else {
+                        input.classList.remove('error-highlight');
+                    }
+                });
+                
+                // Check if at least one course is selected when on section 2
+                if (document.querySelector('#section2').classList.contains('active')) {
+                    let courseSelected = false;
+                    document.querySelectorAll('input[name="courses"]').forEach((checkbox) => {
+                        if (checkbox.checked) courseSelected = true;
+                    });
+                    
+                    if (!courseSelected) {
+                        valid = false;
+                        this.showNotification("Please select at least one course", "error");
+                    }
+                    
+                    // Check if at least one class type is selected
+                    let classTypeSelected = false;
+                    document.querySelectorAll('input[name="classType"]').forEach((checkbox) => {
+                        if (checkbox.checked) classTypeSelected = true;
+                    });
+                    
+                    if (!classTypeSelected) {
+                        valid = false;
+                        this.showNotification("Please select a class type", "error");
+                    }
+                }
+                
+                // Check if terms are accepted when on section 3
+                if (document.querySelector('#section3').classList.contains('active')) {
+                    if (!document.getElementById('termsAccept').checked) {
+                        valid = false;
+                        this.showNotification("Please accept the terms and conditions", "error");
+                    }
+                }
+                
+                return valid;
+            },
+    
+            submitForm: function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                if (!this.validateForm()) {
+                    this.showNotification("Please fill all required fields correctly.", "error");
+                    return false;
+                }
+
+                // Gather form data
+                let formData = new FormData(document.getElementById(this.formId));
+                let studentData = {
+                    personalInfo: {
+                        fullName: formData.get('fullName'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        address: formData.get('address'),
+                    },
+                    courses: [],
+                    classType: []
+                };
+
+                // Get all selected courses
+                document.querySelectorAll('input[name="courses"]:checked').forEach((checkbox) => {
+                    studentData.courses.push(checkbox.value);
+                });
+                
+                // Get all selected class types
+                document.querySelectorAll('input[name="classType"]:checked').forEach((checkbox) => {
+                    studentData.classType.push(checkbox.value);
+                });
+
+                // Check for duplicate email in localStorage
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const existing = students.find(s => s.personalInfo.email === studentData.personalInfo.email);
+                
+                if (existing) {
+                    this.showNotification('This email is already enrolled.', 'error');
+                    return false;
+                }
+
+                // Add student to the library and localStorage
+                students.push(studentData);
+                localStorage.setItem('students', JSON.stringify(students));
+
+                this.showNotification('Enrollment Successful!', 'success');
+                
+                // Reset the form
+                document.getElementById(this.formId).reset();
+                
+                // Go back to first section
+                const sections = document.querySelectorAll('.form-section');
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById('section1').classList.add('active');
+                
+                // Reset progress indicator
+                const steps = document.querySelectorAll('.form-step');
+                steps.forEach(step => step.classList.remove('active'));
+                document.querySelector('.form-step:first-child').classList.add('active');
+
+                return true;
+            }
+        };
+    
+        // Initialize the library
+        EnrolledStudents.init({
+            formId: 'enrollmentForm',
+            notificationId: 'formNotification',
+            notificationTextId: 'notificationText',
+            sections: ['section1', 'section2', 'section3'],
+            requiredFields: ['fullName', 'email', 'phone', 'address', 'courses'],
+        });
+    </script>
+</body>
+</html>
